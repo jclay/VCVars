@@ -14,11 +14,18 @@ function Find-VCVars {
     [String]
     $Product = "Any",
     [Alias("l")]
-    [Switch]
-    $Latest = $false
+    [Switch]$Latest = $false,
+    [Switch]$Preview = $false
   )
 
-  $instances = Get-VSSetupInstance | Sort-Object -Property InstallDate
+  if ($Preview) { 
+    $instances = Get-VSSetupInstance -Prerelease 
+  } else {
+    $instances = Get-VSSetupInstance 
+  }
+
+  $instances = $instances | Sort-Object -Property InstallDate
+
   if ($Latest) { $instances = $instances | Select-Object -Last 1 }
 
   $instances `
